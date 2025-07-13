@@ -1,8 +1,6 @@
 import { streamGemini } from './gemini-api.js';
-// Import the text-to-speech library (you'll need to install it first)
-// Run: npm install --save text-to-speech-js
-// Then add this script tag to your HTML: <script src="node_modules/text-to-speech-js/lib/text-to-speech.min.js"></script>
 
+// Existing setup
 let form = document.querySelector('form');
 let promptInput = document.querySelector('input[name="prompt"]');
 let output = document.querySelector('.output');
@@ -10,13 +8,11 @@ let output = document.querySelector('.output');
 // Text-to-Speech function using text-to-speech-js library
 function speakText(text) {
   try {
-    // Check if TextToSpeech is available
     if (typeof TextToSpeech !== 'undefined') {
       TextToSpeech.talk(text);
       return true;
     } else {
       console.warn('TextToSpeech library not loaded');
-      // Fallback to Web Speech API
       return fallbackSpeech(text);
     }
   } catch (error) {
@@ -41,17 +37,15 @@ function fallbackSpeech(text) {
 
 // Function to stop speech
 function stopSpeech() {
-  // Stop text-to-speech-js (if it has a stop method)
   if (typeof TextToSpeech !== 'undefined' && TextToSpeech.stop) {
     TextToSpeech.stop();
   }
-  
-  // Also stop Web Speech API as fallback
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
   }
 }
 
+// Submit handler
 form.onsubmit = async (ev) => {
   ev.preventDefault();
   output.textContent = 'Generating...';
@@ -99,42 +93,97 @@ form.onsubmit = async (ev) => {
 
       const fullText = buffer.join('');
 
-      // Add speech controls to the output
       const speechControls = document.createElement('div');
       speechControls.className = 'speech-controls';
       speechControls.innerHTML = `
         <button type="button" onclick="speakAnalysis()" class="speak-btn">🔊 Speak Analysis</button>
         <button type="button" onclick="stopSpeech()" class="stop-btn">⏹️ Stop Speech</button>
       `;
-      
-      // Remove any existing speech controls
+
       const existingControls = document.querySelector('.speech-controls');
       if (existingControls) {
         existingControls.remove();
       }
-      
-      // Add new speech controls after the output
+
       output.parentNode.insertBefore(speechControls, output.nextSibling);
-      
-      // Store the full text globally so buttons can access it
       window.currentAnalysisText = fullText;
-      
-      // Automatically speak the analysis
       speakText(fullText);
     };
 
     reader.readAsDataURL(file);
-  } 
-  catch (e) {
+  } catch (e) {
     output.innerHTML += '<hr>' + e;
   }
 };
 
-// Make functions globally available for button onclick handlers
-window.speakAnalysis = function() {
+// 🆕 New Addition: Make speak/stop functions globally available
+window.speakAnalysis = function () {
   if (window.currentAnalysisText) {
     speakText(window.currentAnalysisText);
   }
 };
-
 window.stopSpeech = stopSpeech;
+
+// 🆕 New Addition: Camera + Gallery DOM elements
+const captureBtn = document.getElementById("captureBtn");
+const cameraModal = document.getElementById("cameraModal");
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const galleryBtn = document.getElementById("galleryBtn");
+const galleryInput = document.getElementById("galleryInput");
+
+let stream; // 🆕 Track media stream globally
+
+// 🆕 New Addition: Open camera on capture button click
+captureBtn.onclick = async () => {
+  try {
+    cameraModal.style.display = "block";
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" },
+      audio: false
+    });
+    video.srcObject = stream;
+  } catch (err) {
+    alert("Camera not accessible. Please allow permission.");
+    console.error(err);
+  }
+};
+
+// 🆕 New Addition: Capture image from video on tap
+video.onclick = () => {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext("2d").drawImage(video, 0, 0);
+
+  // Stop camera
+  if (stream) stream.getTracks().forEach(track => track.stop());
+  cameraModal.style.display = "none";
+
+  // Convert to file and trigger form
+  canvas.toBlob(blob => {
+    const file = new File([blob], "captured.jpg", { type: "image/jpeg" });
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    document.getElementById("myfile").files = dt.files;
+    form.requestSubmit(); // ⬅️ Trigger the existing logic
+  }, "image/jpeg");
+};
+
+// 🆕 New Addition: Gallery button triggers file input
+galleryBtn.onclick = () => {
+  galleryInput.click();
+};
+
+// 🆕 New Addition: Handle selected image from gallery
+galleryInput.onchange = () => {
+  const file = galleryInput.files[0];
+  if (!file) return;
+
+  if (stream) stream.getTracks().forEach(track => track.stop());
+  cameraModal.style.display = "none";
+
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  document.getElementById("myfile").files = dt.files;
+  form.requestSubmit(); // ⬅️ Trigger the existing logic
+};
