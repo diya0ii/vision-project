@@ -3,6 +3,7 @@ import { streamGemini } from './gemini-api.js';
 // Existing setup
 let form = document.querySelector('form');
 let promptInput = document.querySelector('input[name="prompt"]');
+let languageSelect = document.querySelector('#language');
 let output = document.querySelector('.output');
 
 // Text-to-Speech function using text-to-speech-js library
@@ -45,6 +46,15 @@ function stopSpeech() {
   }
 }
 
+// Function to build the complete prompt with language
+function buildPrompt(userPrompt, selectedLanguage) {
+  if (selectedLanguage === 'English') {
+    return userPrompt;
+  } else {
+    return `${userPrompt}. Please respond in ${selectedLanguage}.`;
+  }
+}
+
 // Submit handler
 form.onsubmit = async (ev) => {
   ev.preventDefault();
@@ -62,6 +72,10 @@ form.onsubmit = async (ev) => {
 
     reader.onload = async () => {
       const base64Image = reader.result.split(',')[1];
+      
+      // Get selected language and build complete prompt
+      const selectedLanguage = languageSelect.value;
+      const completePrompt = buildPrompt(promptInput.value, selectedLanguage);
 
       const contents = [
         {
@@ -73,7 +87,7 @@ form.onsubmit = async (ev) => {
                 data: base64Image,
               },
             },
-            { text: promptInput.value }
+            { text: completePrompt }
           ],
         },
       ];
@@ -187,3 +201,16 @@ galleryInput.onchange = () => {
   document.getElementById("myfile").files = dt.files;
   form.requestSubmit(); // ⬅️ Trigger the existing logic
 };
+
+// Optional: Save user's language preference
+languageSelect.onchange = () => {
+  localStorage.setItem('preferredLanguage', languageSelect.value);
+};
+
+// Optional: Load user's language preference on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const savedLanguage = localStorage.getItem('preferredLanguage');
+  if (savedLanguage) {
+    languageSelect.value = savedLanguage;
+  }
+});

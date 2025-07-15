@@ -38,6 +38,29 @@
     .stop-btn:hover {
       background-color: #da190b;
     }
+
+    .language-selector {
+      margin: 10px 0;
+    }
+    
+    .language-selector label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    .language-selector select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      background-color: white;
+    }
+    
+    .prompt-box {
+      margin-top: 15px;
+    }
   </style>
 </head>
 
@@ -47,6 +70,48 @@
     <form>
       <label for="myfile">Select a file:</label>
       <input type="file" id="myfile" name="myfile"><br><br>
+      
+      <div class="language-selector">
+        <label for="language">Select Language:</label>
+        <select id="language" name="language">
+          <option value="English">English</option>
+          <option value="Spanish">Spanish (Español)</option>
+          <option value="French">French (Français)</option>
+          <option value="German">German (Deutsch)</option>
+          <option value="Italian">Italian (Italiano)</option>
+          <option value="Portuguese">Portuguese (Português)</option>
+          <option value="Russian">Russian (Русский)</option>
+          <option value="Chinese">Chinese (中文)</option>
+          <option value="Japanese">Japanese (日本語)</option>
+          <option value="Korean">Korean (한국어)</option>
+          <option value="Arabic">Arabic (العربية)</option>
+          <option value="Hindi">Hindi (हिंदी)</option>
+          <option value="Bengali">Bengali (বাংলা)</option>
+          <option value="Dutch">Dutch (Nederlands)</option>
+          <option value="Swedish">Swedish (Svenska)</option>
+          <option value="Norwegian">Norwegian (Norsk)</option>
+          <option value="Danish">Danish (Dansk)</option>
+          <option value="Finnish">Finnish (Suomi)</option>
+          <option value="Polish">Polish (Polski)</option>
+          <option value="Czech">Czech (Čeština)</option>
+          <option value="Hungarian">Hungarian (Magyar)</option>
+          <option value="Romanian">Romanian (Română)</option>
+          <option value="Bulgarian">Bulgarian (Български)</option>
+          <option value="Croatian">Croatian (Hrvatski)</option>
+          <option value="Serbian">Serbian (Српски)</option>
+          <option value="Ukrainian">Ukrainian (Українська)</option>
+          <option value="Greek">Greek (Ελληνικά)</option>
+          <option value="Turkish">Turkish (Türkçe)</option>
+          <option value="Hebrew">Hebrew (עברית)</option>
+          <option value="Thai">Thai (ไทย)</option>
+          <option value="Vietnamese">Vietnamese (Tiếng Việt)</option>
+          <option value="Indonesian">Indonesian (Bahasa Indonesia)</option>
+          <option value="Malay">Malay (Bahasa Melayu)</option>
+          <option value="Tagalog">Tagalog (Filipino)</option>
+          <option value="Swahili">Swahili (Kiswahili)</option>
+        </select>
+      </div>
+      
       <div class="prompt-box">
         <label>
           <input name="prompt" placeholder="Enter instructions here" type="text"
