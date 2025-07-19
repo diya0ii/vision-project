@@ -130,7 +130,7 @@ form.onsubmit = async (ev) => {
   }
 };
 
-// 🆕 New Addition: Make speak/stop functions globally available
+//  New Addition: Make speak/stop functions globally available
 window.speakAnalysis = function () {
   if (window.currentAnalysisText) {
     speakText(window.currentAnalysisText);
@@ -138,7 +138,7 @@ window.speakAnalysis = function () {
 };
 window.stopSpeech = stopSpeech;
 
-// 🆕 New Addition: Camera + Gallery DOM elements
+//  New Addition: Camera + Gallery DOM elements
 const captureBtn = document.getElementById("captureBtn");
 const cameraModal = document.getElementById("cameraModal");
 const video = document.getElementById("video");
@@ -146,9 +146,9 @@ const canvas = document.getElementById("canvas");
 const galleryBtn = document.getElementById("galleryBtn");
 const galleryInput = document.getElementById("galleryInput");
 
-let stream; // 🆕 Track media stream globally
+let stream; //  Track media stream globally
 
-// 🆕 New Addition: Open camera on capture button click
+//  New Addition: Open camera on capture button click
 captureBtn.onclick = async () => {
   try {
     cameraModal.style.display = "block";
